@@ -6,10 +6,6 @@ import { createClient } from "../supabase/server"
 export async function saveNote(formData: FormData) {
     const note = formData.get("note") as string
 
-    if (!note?.trim()) {
-        return
-    }
-
     const supabase = await createClient()
     const {
         data: { user },
@@ -29,7 +25,7 @@ export async function saveNote(formData: FormData) {
 
     let error
 
-    if (existingNotes && existingNotes.length > 0) {
+    if (existingNotes) {
         // Update existing note
         const result = await supabase.from("notes").update({ note: note.trim(), user_id: user.id }).eq("id", existingNotes[0].id)
         error = result.error

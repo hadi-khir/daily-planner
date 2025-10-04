@@ -7,6 +7,7 @@ import { LogOut, User } from "lucide-react"
 import { redirect } from "next/navigation"
 import { Hydration } from "@/components/hydration"
 import { createClient } from "@/lib/supabase/server"
+import { getUserPreferences } from "@/lib/actions/preferences"
 
 export default async function DailyPlannerPage() {
   const supabase = await createClient()
@@ -18,6 +19,9 @@ export default async function DailyPlannerPage() {
   if (!user) {
     redirect("/auth/login")
   }
+
+  // get user_preference weather if set
+  const userLocation = await getUserPreferences().then((res) => res.data?.location || "San Francisco")
 
   const currentDate = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -80,7 +84,7 @@ export default async function DailyPlannerPage() {
             <NotesComponent />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <Hydration />
-              <WeatherWidget />
+              <WeatherWidget userLocation={userLocation} />
             </div>
           </div>
         </div>
