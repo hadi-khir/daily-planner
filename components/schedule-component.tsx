@@ -1,14 +1,13 @@
-import { getScheduleEvents } from "@/lib/actions/schedule";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Clock, Plus, X } from "lucide-react";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
-import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Plus, Clock, X } from "lucide-react"
+import { addScheduleEvent, deleteScheduleEvent, getScheduleEvents } from "@/lib/actions/schedule"
 
 export async function ScheduleComponent() {
-
-    const events = await getScheduleEvents();
+    const events = await getScheduleEvents()
 
     return (
         <Card className="h-fit">
@@ -19,12 +18,23 @@ export async function ScheduleComponent() {
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+                {/* Add event form */}
                 <Card className="border-dashed">
                     <CardContent className="pt-6 space-y-4">
-                        <form className="space-y-4">
+                        <form action={addScheduleEvent} className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="title">Event Title</Label>
                                 <Input id="title" name="title" placeholder="Enter event title" required />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="eventDate">Date</Label>
+                                <Input
+                                    id="eventDate"
+                                    name="eventDate"
+                                    type="date"
+                                    defaultValue={new Intl.DateTimeFormat('en-CA').format(new Date())}
+                                    required
+                                />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
@@ -48,6 +58,7 @@ export async function ScheduleComponent() {
                     </CardContent>
                 </Card>
 
+                {/* Events list */}
                 <div className="space-y-3">
                     {events.length === 0 ? (
                         <div className="text-center py-8 text-muted-foreground">
@@ -67,9 +78,18 @@ export async function ScheduleComponent() {
                                                 </div>
                                                 <h3 className="font-semibold">{event.title}</h3>
                                             </div>
+                                            {event.event_date && (
+                                                <p className="text-xs text-muted-foreground mb-1">
+                                                    {new Date(event.event_date).toLocaleDateString("en-US", {
+                                                        weekday: "short",
+                                                        month: "short",
+                                                        day: "numeric",
+                                                    })}
+                                                </p>
+                                            )}
                                             {event.description && <p className="text-sm text-muted-foreground">{event.description}</p>}
                                         </div>
-                                        <form className="inline">
+                                        <form action={deleteScheduleEvent} className="inline">
                                             <input type="hidden" name="id" value={event.id} />
                                             <Button
                                                 type="submit"
@@ -88,5 +108,5 @@ export async function ScheduleComponent() {
                 </div>
             </CardContent>
         </Card>
-    );
+    )
 }
