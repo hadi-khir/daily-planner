@@ -6,7 +6,6 @@ import { WeatherWidget } from "@/components/weather-widget"
 import { LogOut, User } from "lucide-react"
 import { redirect } from "next/navigation"
 import { Hydration } from "@/components/hydration"
-import { da } from "zod/locales"
 import { createClient } from "@/lib/supabase/server"
 
 export default async function DailyPlannerPage() {
@@ -41,7 +40,7 @@ export default async function DailyPlannerPage() {
     "use server"
     const supabase = await createClient()
     await supabase.auth.signOut()
-    redirect("/auth/login")
+    redirect("/signup")
   }
 
   return (
