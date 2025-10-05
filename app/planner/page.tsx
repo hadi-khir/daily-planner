@@ -23,11 +23,13 @@ export default async function DailyPlannerPage() {
   // get user_preference weather if set
   const userLocation = await getUserPreferences().then((res) => res.data?.location || "San Francisco")
 
-  const currentDate = new Date().toLocaleDateString("en-US", {
+  const now = new Date()
+  const currentDate = now.toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
   })
 
   const quotes = [
