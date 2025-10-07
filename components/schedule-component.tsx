@@ -1,3 +1,5 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -5,9 +7,20 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Plus, Clock, X } from "lucide-react"
 import { addScheduleEvent, deleteScheduleEvent, getScheduleEvents } from "@/lib/actions/schedule"
+import { useEffect, useState } from "react"
+import { useCurrentDate } from "@/contexts/date-context"
 
-export async function ScheduleComponent() {
-    const events = await getScheduleEvents()
+export function ScheduleComponent() {
+    const [events, setEvents] = useState<any[]>([])
+    const currentDate = useCurrentDate()
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            const data = await getScheduleEvents(currentDate)
+            setEvents(data)
+        }
+        fetchEvents()
+    }, [currentDate])
 
     return (
         <Card className="h-fit">

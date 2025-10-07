@@ -1,11 +1,24 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Plus, Target, X } from "lucide-react"
 import { addGoal, deleteGoal, getGoals } from "@/lib/actions/goals"
+import { useEffect, useState } from "react"
+import { useCurrentDate } from "@/contexts/date-context"
 
-export async function DailyGoals() {
-    const goals = await getGoals()
+export function DailyGoals() {
+    const [goals, setGoals] = useState<any[]>([])
+    const currentDate = useCurrentDate()
+
+    useEffect(() => {
+        const fetchGoals = async () => {
+            const data = await getGoals(currentDate)
+            setGoals(data)
+        }
+        fetchGoals()
+    }, [currentDate])
 
     return (
         <Card>

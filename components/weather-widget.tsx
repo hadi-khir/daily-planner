@@ -17,6 +17,8 @@ interface WeatherData {
     humidity: number
     windSpeed: number
     feelsLike: number
+    highTemp: number
+    lowTemp: number
 }
 
 interface WeatherWidgetProps {
@@ -158,12 +160,12 @@ export function WeatherWidget({ userLocation = "Ottawa" }: WeatherWidgetProps) {
 
                         <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
-                                <div className="text-muted-foreground">Humidity</div>
-                                <div className="font-medium">{weather.humidity}%</div>
+                                <div className="text-muted-foreground">High / Low</div>
+                                <div className="font-medium">{weather.highTemp}° / {weather.lowTemp}°</div>
                             </div>
                             <div>
-                                <div className="text-muted-foreground">Wind</div>
-                                <div className="font-medium">{weather.windSpeed} mph</div>
+                                <div className="text-muted-foreground">Humidity</div>
+                                <div className="font-medium">{weather.humidity}%</div>
                             </div>
                         </div>
                     </div>

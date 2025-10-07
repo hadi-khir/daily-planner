@@ -1,12 +1,24 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { FileText, Save } from "lucide-react"
 import { getLatestNote, saveNote } from "@/lib/actions/notes"
+import { useEffect, useState } from "react"
+import { useCurrentDate } from "@/contexts/date-context"
 
-export async function NotesComponent() {
-    const latestNote = await getLatestNote()
-    const defaultNotes = latestNote?.note || ""
+export function NotesComponent() {
+    const [defaultNotes, setDefaultNotes] = useState("")
+    const currentDate = useCurrentDate()
+
+    useEffect(() => {
+        const fetchNote = async () => {
+            const latestNote = await getLatestNote(currentDate)
+            setDefaultNotes(latestNote?.note || "")
+        }
+        fetchNote()
+    }, [currentDate])
 
     return (
         <Card>
@@ -18,9 +30,11 @@ export async function NotesComponent() {
             </CardHeader>
             <CardContent>
                 <form action={saveNote} className="space-y-4">
+                    <input type="hidden" name="clientDate" value={currentDate} />
                     <Textarea
                         name="note"
-                        defaultValue={defaultNotes}
+                        value={defaultNotes}
+                        onChange={(e) => setDefaultNotes(e.target.value)}
                         placeholder="Write your thoughts, ideas, or reminders here..."
                         className="min-h-[200px] resize-none"
                     />

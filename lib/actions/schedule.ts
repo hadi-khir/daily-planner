@@ -63,7 +63,7 @@ export async function deleteScheduleEvent(formData: FormData) {
     revalidatePath("/")
 }
 
-export async function getScheduleEvents() {
+export async function getScheduleEvents(clientDate?: string) {
     const supabase = await createClient()
 
     // Get current user
@@ -74,7 +74,8 @@ export async function getScheduleEvents() {
         return []
     }
 
-    const todayLocal = new Intl.DateTimeFormat('en-CA').format(new Date())
+    const now = clientDate ? new Date(clientDate) : new Date()
+    const todayLocal = new Intl.DateTimeFormat('en-CA').format(now)
 
     const { data: events, error } = await supabase
         .from("schedule")

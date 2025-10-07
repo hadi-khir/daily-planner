@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
     try {
         const response = await fetch(
-            `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(location)}&aqi=no`,
+            `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${encodeURIComponent(location)}&days=1&aqi=no`,
         )
 
         if (!response.ok) {
@@ -34,6 +34,8 @@ export async function GET(request: NextRequest) {
             condition: data.current.condition.text,
             humidity: data.current.humidity,
             windSpeed: Math.round(data.current.wind_mph),
+            highTemp: Math.round(data.forecast.forecastday[0].day.maxtemp_c),
+            lowTemp: Math.round(data.forecast.forecastday[0].day.mintemp_c),
         }
 
         return NextResponse.json(weatherData)

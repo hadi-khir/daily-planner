@@ -1,13 +1,11 @@
 import { Button } from "@/components/ui/button"
-import { ScheduleComponent } from "@/components/schedule-component"
-import { DailyGoals } from "@/components/daily-goals"
-import { NotesComponent } from "@/components/notes-component"
-import { WeatherWidget } from "@/components/weather-widget"
 import { LogOut, User } from "lucide-react"
 import { redirect } from "next/navigation"
-import { Hydration } from "@/components/hydration"
 import { createClient } from "@/lib/supabase/server"
 import { getUserPreferences } from "@/lib/actions/preferences"
+import { CurrentDate } from "@/components/current-date"
+import { QuoteComponent } from "@/components/quote-component"
+import { PlannerClient } from "@/components/planner-client"
 
 export default async function DailyPlannerPage() {
   const supabase = await createClient()
@@ -22,25 +20,6 @@ export default async function DailyPlannerPage() {
 
   // get user_preference weather if set
   const userLocation = await getUserPreferences().then((res) => res.data?.location || "San Francisco")
-
-  const now = new Date()
-  const currentDate = now.toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-  })
-
-  const quotes = [
-    "The way to get started is to quit talking and begin doing. - Walt Disney",
-    "Innovation distinguishes between a leader and a follower. - Steve Jobs",
-    "Your time is limited, don't waste it living someone else's life. - Steve Jobs",
-    "Life is what happens to you while you're busy making other plans. - John Lennon",
-    "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
-  ]
-
-  const todaysQuote = quotes[new Date().getDate() % quotes.length]
 
   async function logout() {
     "use server"
@@ -69,27 +48,11 @@ export default async function DailyPlannerPage() {
       <main className="container mx-auto px-6 pb-8">
         {/* Centered title and quote */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-foreground mb-4 text-balance">{currentDate}</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">{todaysQuote}</p>
+          <CurrentDate />
+          <QuoteComponent />
         </div>
 
-        {/* Two column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-          {/* Left column - Schedule */}
-          <div className="space-y-6">
-            <ScheduleComponent />
-          </div>
-
-          {/* Right column - Widgets */}
-          <div className="space-y-6">
-            <DailyGoals />
-            <NotesComponent />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <Hydration />
-              <WeatherWidget userLocation={userLocation} />
-            </div>
-          </div>
-        </div>
+        <PlannerClient userLocation={userLocation} />
       </main>
     </div>
   )

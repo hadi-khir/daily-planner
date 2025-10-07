@@ -1,12 +1,24 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Droplets, Plus, Minus } from "lucide-react"
 import { updateHydration, getTodayHydration } from "@/lib/actions/hydration"
+import { useEffect, useState } from "react"
+import { useCurrentDate } from "@/contexts/date-context"
 
-export async function Hydration() {
-    const todayHydration = await getTodayHydration()
-    const glasses = todayHydration?.cups || 0
+export function Hydration() {
+    const [glasses, setGlasses] = useState(0)
+    const currentDate = useCurrentDate()
     const dailyGoal = 8
+
+    useEffect(() => {
+        const fetchHydration = async () => {
+            const data = await getTodayHydration(currentDate)
+            setGlasses(data?.cups || 0)
+        }
+        fetchHydration()
+    }, [currentDate])
 
     const progressPercentage = Math.min((glasses / dailyGoal) * 100, 100)
 
@@ -40,12 +52,14 @@ export async function Hydration() {
                 <div className="flex justify-center gap-2">
                     <form action={updateHydration} className="inline">
                         <input type="hidden" name="cups" value={Math.max(glasses - 1, 0)} />
+                        <input type="hidden" name="clientDate" value={currentDate} />
                         <Button type="submit" variant="outline" size="sm" disabled={glasses === 0}>
                             <Minus className="h-4 w-4" />
                         </Button>
                     </form>
                     <form action={updateHydration} className="inline">
                         <input type="hidden" name="cups" value={glasses + 1} />
+                        <input type="hidden" name="clientDate" value={currentDate} />
                         <Button type="submit" size="sm" className="flex items-center gap-2">
                             <Plus className="h-4 w-4" />
                             Add Glass

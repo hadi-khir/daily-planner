@@ -61,10 +61,20 @@ export async function deleteGoal(formData: FormData) {
     // No return statement needed here
 }
 
-export async function getGoals() {
+export async function getGoals(clientDate?: string) {
     const supabase = await createClient()
 
-    const { data: goals, error } = await supabase.from("goals").select("*").order("created_at", { ascending: false })
+    // Use client's date if provided, otherwise use server time
+    const now = clientDate ? new Date(clientDate) : new Date()
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+
+    const { data: goals, error } = await supabase
+        .from("goals")
+        .select("*")
+        .gte("created_at", startOfDay.toISOString())
+        .lt("created_at", endOfDay.toISOString())
+        .order("created_at", { ascending: false })
 
     if (error) {
         console.error("Error fetching goals:", error)

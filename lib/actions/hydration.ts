@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 
 export async function updateHydration(formData: FormData) {
     const cups = formData.get("cups") as string
+    const clientDate = formData.get("clientDate") as string
 
     if (!cups) {
         return
@@ -25,13 +26,17 @@ export async function updateHydration(formData: FormData) {
         return
     }
 
-    // Get today's hydration record
-    const today = new Date().toISOString().split("T")[0]
+    // Get today's hydration record in local timezone
+    const now = clientDate ? new Date(clientDate) : new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const todayStart = today.toISOString()
+    const todayEnd = new Date(today.getTime() + 24 * 60 * 60 * 1000).toISOString()
+
     const { data: existingRecord } = await supabase
         .from("hydration")
         .select("*")
-        .gte("created_at", `${today}T00:00:00.000Z`)
-        .lt("created_at", `${today}T23:59:59.999Z`)
+        .gte("created_at", todayStart)
+        .lt("created_at", todayEnd)
         .limit(1)
 
     let error
@@ -54,15 +59,22 @@ export async function updateHydration(formData: FormData) {
     revalidatePath("/")
 }
 
-export async function getTodayHydration() {
+export async function getTodayHydration(clientDate?: string) {
     const supabase = await createClient()
 
-    const today = new Date().toISOString().split("T")[0]
+    // Get today's hydration record in local timezone
+    const now = clientDate ? new Date(clientDate) : new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const todayStart = today.toISOString()
+    const todayEnd = new Date(today.getTime() + 24 * 60 * 60 * 1000).toISOString()
+
+    console.log("Fetching hydration between", todayStart, "and", todayEnd)
+
     const { data: hydration, error } = await supabase
         .from("hydration")
         .select("*")
-        .gte("created_at", `${today}T00:00:00.000Z`)
-        .lt("created_at", `${today}T23:59:59.999Z`)
+        .gte("created_at", todayStart)
+        .lt("created_at", todayEnd)
         .limit(1)
 
     if (error) {
