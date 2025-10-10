@@ -3,6 +3,10 @@
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 
+/**
+ * Retrieves user preferences for the authenticated user.
+ * @returns Object containing user preference data or error message
+ */
 export async function getUserPreferences() {
     const supabase = await createClient()
 
@@ -17,13 +21,17 @@ export async function getUserPreferences() {
     const { data, error } = await supabase.from("user_preference").select("*").eq("user_id", user.id).single()
 
     if (error && error.code !== "PGRST116") {
-        // PGRST116 is "not found" error
         return { data: null, error: error.message }
     }
 
     return { data, error: null }
 }
 
+/**
+ * Updates the user's location preference.
+ * @param formData - Form data containing the location string
+ * @returns Object with error message or null on success
+ */
 export async function updateUserLocation(formData: FormData) {
     const location = formData.get("location") as string
 
@@ -41,11 +49,9 @@ export async function updateUserLocation(formData: FormData) {
         return { error: "Not authenticated" }
     }
 
-    // Try to update first
     const { data: existing } = await supabase.from("user_preference").select("id").eq("user_id", user.id).single()
 
     if (existing) {
-        // Update existing preference
         const { error } = await supabase
             .from("user_preference")
             .update({ location, updated_at: new Date().toISOString() })
@@ -55,7 +61,6 @@ export async function updateUserLocation(formData: FormData) {
             return { error: error.message }
         }
     } else {
-        // Insert new preference
         const { error } = await supabase.from("user_preference").insert({ user_id: user.id, location })
 
         if (error) {

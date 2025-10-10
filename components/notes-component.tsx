@@ -8,6 +8,9 @@ import { getLatestNote, saveNote } from "@/lib/actions/notes"
 import { useEffect, useState } from "react"
 import { useCurrentDate } from "@/contexts/date-context"
 
+/**
+ * Component for writing and persisting daily notes.
+ */
 export function NotesComponent() {
     const [defaultNotes, setDefaultNotes] = useState("")
     const currentDate = useCurrentDate()

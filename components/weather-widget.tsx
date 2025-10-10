@@ -25,6 +25,10 @@ interface WeatherWidgetProps {
     userLocation?: string
 }
 
+/**
+ * Weather widget component that displays current weather conditions.
+ * @param userLocation - The user's location for weather display
+ */
 export function WeatherWidget({ userLocation = "Ottawa" }: WeatherWidgetProps) {
     const [weather, setWeather] = useState<WeatherData | null>(null)
     const [loading, setLoading] = useState(true)
@@ -33,6 +37,9 @@ export function WeatherWidget({ userLocation = "Ottawa" }: WeatherWidgetProps) {
     const [error, setError] = useState<string | null>(null)
     const router = useRouter()
 
+    /**
+     * Fetches weather data for the specified location.
+     */
     const fetchWeather = async (location: string) => {
         setLoading(true)
         setError(null)
@@ -58,6 +65,9 @@ export function WeatherWidget({ userLocation = "Ottawa" }: WeatherWidgetProps) {
         fetchWeather(userLocation)
     }, [userLocation])
 
+    /**
+     * Handles location update form submission.
+     */
     const handleLocationSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
@@ -74,6 +84,9 @@ export function WeatherWidget({ userLocation = "Ottawa" }: WeatherWidgetProps) {
         }
     }
 
+    /**
+     * Returns the appropriate weather icon based on condition.
+     */
     const getWeatherIcon = (condition: string) => {
         const lowerCondition = condition.toLowerCase()
 

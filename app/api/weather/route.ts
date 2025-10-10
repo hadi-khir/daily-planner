@@ -1,5 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
 
+/**
+ * API route handler for fetching weather data.
+ * @param request - Next.js request object containing location query parameter
+ * @returns Weather data or error response
+ */
 export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams
     const location = searchParams.get("location")
@@ -8,7 +13,6 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: "Location is required" }, { status: 400 })
     }
 
-    // You'll need to add WEATHER_API_KEY to your environment variables
     const apiKey = process.env.WEATHER_API_KEY
 
     if (!apiKey) {
@@ -26,7 +30,6 @@ export async function GET(request: NextRequest) {
 
         const data = await response.json()
 
-        // Transform the API response to match our interface
         const weatherData = {
             location: `${data.location.name}, ${data.location.region}`,
             temperature: Math.round(data.current.temp_c),

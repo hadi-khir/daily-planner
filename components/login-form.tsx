@@ -12,10 +12,16 @@ import {
 } from '@/components/ui/card'
 import { useState } from 'react'
 
+/**
+ * Login form component with Google OAuth integration.
+ */
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  /**
+   * Handles Google OAuth login flow.
+   */
   const handleSocialLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     const supabase = createClient()

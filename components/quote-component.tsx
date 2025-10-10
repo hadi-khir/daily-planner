@@ -8,6 +8,9 @@ interface QuoteData {
   quoteCategory?: string
 }
 
+/**
+ * Component that displays a daily inspirational quote.
+ */
 export function QuoteComponent() {
   const [quote, setQuote] = useState("The way to get started is to quit talking and begin doing.")
   const [author, setAuthor] = useState("Walt Disney")

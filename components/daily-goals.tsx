@@ -8,8 +8,18 @@ import { addGoal, deleteGoal, getGoals } from "@/lib/actions/goals"
 import { useEffect, useState } from "react"
 import { useCurrentDate } from "@/contexts/date-context"
 
+interface Goal {
+    id: number
+    goal: string
+    user_id: string
+    created_at: string
+}
+
+/**
+ * Component for displaying and managing daily goals.
+ */
 export function DailyGoals() {
-    const [goals, setGoals] = useState<any[]>([])
+    const [goals, setGoals] = useState<Goal[]>([])
     const currentDate = useCurrentDate()
 
     useEffect(() => {
@@ -30,14 +40,12 @@ export function DailyGoals() {
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                {/* Add goal form */}
                 <form action={addGoal} className="flex gap-2">
                     <Input name="goal" placeholder="Enter your goal" required />
                     <Button type="submit" size="sm">
                         <Plus className="h-4 w-4" />
                     </Button>
                 </form>
-                {/* Goals list */}
                 <div className="space-y-3">
                     {goals.length === 0 ? (
                         <div className="text-center py-6 text-muted-foreground">

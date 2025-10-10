@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server"
 
+/**
+ * API route handler for fetching daily inspirational quotes.
+ * @returns Quote data or error response
+ */
 export async function GET() {
-
     const apiKey = process.env.QUOTE_API_KEY
 
     if (!apiKey) {
@@ -24,7 +27,6 @@ export async function GET() {
 
         const data = await response.json()
 
-        // Transform the API response to match our interface
         const quoteData = {
             quoteText: data[0].quote,
             quoteAuthor: data[0].author,

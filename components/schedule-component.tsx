@@ -10,8 +10,22 @@ import { addScheduleEvent, deleteScheduleEvent, getScheduleEvents } from "@/lib/
 import { useEffect, useState } from "react"
 import { useCurrentDate } from "@/contexts/date-context"
 
+interface ScheduleEvent {
+    id: number
+    title: string
+    description: string | null
+    start_time: string
+    end_time: string
+    event_date: string
+    user_id: string
+    created_at: string
+}
+
+/**
+ * Component for displaying and managing scheduled events.
+ */
 export function ScheduleComponent() {
-    const [events, setEvents] = useState<any[]>([])
+    const [events, setEvents] = useState<ScheduleEvent[]>([])
     const currentDate = useCurrentDate()
 
     useEffect(() => {
@@ -31,7 +45,6 @@ export function ScheduleComponent() {
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                {/* Add event form */}
                 <Card className="border-dashed">
                     <CardContent className="pt-6 space-y-4">
                         <form action={addScheduleEvent} className="space-y-4">
@@ -71,7 +84,6 @@ export function ScheduleComponent() {
                     </CardContent>
                 </Card>
 
-                {/* Events list */}
                 <div className="space-y-3">
                     {events.length === 0 ? (
                         <div className="text-center py-8 text-muted-foreground">

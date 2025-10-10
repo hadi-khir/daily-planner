@@ -3,6 +3,10 @@
 import { revalidatePath } from "next/cache"
 import { createClient } from "../supabase/server"
 
+/**
+ * Adds a new schedule event for the authenticated user.
+ * @param formData - Form data containing title, description, startTime, endTime, and eventDate
+ */
 export async function addScheduleEvent(formData: FormData) {
     const title = formData.get("title") as string
     const description = formData.get("description") as string
@@ -17,7 +21,6 @@ export async function addScheduleEvent(formData: FormData) {
 
     const supabase = await createClient()
 
-    // Get current user
     const {
         data: { user },
     } = await supabase.auth.getUser()
@@ -44,6 +47,10 @@ export async function addScheduleEvent(formData: FormData) {
     revalidatePath("/")
 }
 
+/**
+ * Deletes a schedule event by ID for the authenticated user.
+ * @param formData - Form data containing the event ID
+ */
 export async function deleteScheduleEvent(formData: FormData) {
     const id = formData.get("id") as string
 
@@ -63,10 +70,14 @@ export async function deleteScheduleEvent(formData: FormData) {
     revalidatePath("/")
 }
 
+/**
+ * Retrieves all schedule events for the authenticated user for today's date.
+ * @param clientDate - Optional date string from client to determine timezone context
+ * @returns Array of schedule events or empty array if none found
+ */
 export async function getScheduleEvents(clientDate?: string) {
     const supabase = await createClient()
 
-    // Get current user
     const {
         data: { user },
     } = await supabase.auth.getUser()

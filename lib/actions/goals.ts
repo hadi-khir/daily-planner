@@ -3,12 +3,16 @@
 import { revalidatePath } from "next/cache"
 import { createClient } from "../supabase/server"
 
+/**
+ * Adds a new goal for the authenticated user.
+ * @param formData - Form data containing the goal text
+ */
 export async function addGoal(formData: FormData) {
     const goal = formData.get("goal") as string
 
     if (!goal?.trim()) {
         console.error("Goal is required")
-        return // Don't return an object
+        return
     }
 
     const supabase = await createClient()
@@ -18,26 +22,29 @@ export async function addGoal(formData: FormData) {
 
     if (!user) {
         console.error("User not authenticated")
-        return // Don't return an object
+        return
     }
 
     const { error } = await supabase.from("goals").insert([{ goal: goal.trim(), user_id: user.id }])
 
     if (error) {
         console.error("Error adding goal:", error)
-        return // Don't return an object
+        return
     }
 
     revalidatePath("/")
-    // No return statement needed here
 }
 
+/**
+ * Deletes a goal by ID for the authenticated user.
+ * @param formData - Form data containing the goal ID
+ */
 export async function deleteGoal(formData: FormData) {
     const id = formData.get("id") as string
 
     if (!id) {
         console.error("Goal ID is required")
-        return // Don't return an object
+        return
     }
 
     const supabase = await createClient()
@@ -47,24 +54,27 @@ export async function deleteGoal(formData: FormData) {
 
     if (!user) {
         console.error("User not authenticated")
-        return // Don't return an object
+        return
     }
 
     const { error } = await supabase.from("goals").delete().eq("id", Number.parseInt(id)).eq("user_id", user.id)
 
     if (error) {
         console.error("Error deleting goal:", error)
-        return // Don't return an object
+        return
     }
 
     revalidatePath("/")
-    // No return statement needed here
 }
 
+/**
+ * Retrieves all goals for the authenticated user for today's date.
+ * @param clientDate - Optional date string from client to determine timezone context
+ * @returns Array of goals or empty array if none found
+ */
 export async function getGoals(clientDate?: string) {
     const supabase = await createClient()
 
-    // Use client's date if provided, otherwise use server time
     const now = clientDate ? new Date(clientDate) : new Date()
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
     const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)

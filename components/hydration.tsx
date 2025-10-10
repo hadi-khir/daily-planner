@@ -7,6 +7,9 @@ import { updateHydration, getTodayHydration } from "@/lib/actions/hydration"
 import { useEffect, useState } from "react"
 import { useCurrentDate } from "@/contexts/date-context"
 
+/**
+ * Component for tracking daily water intake.
+ */
 export function Hydration() {
     const [glasses, setGlasses] = useState(0)
     const currentDate = useCurrentDate()

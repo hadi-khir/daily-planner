@@ -7,17 +7,18 @@ import { WeatherWidget } from "@/components/weather-widget"
 import { Hydration } from "@/components/hydration"
 import { DateProvider } from "@/contexts/date-context"
 
+/**
+ * Main planner client component that orchestrates the two-column layout.
+ * @param userLocation - The user's location for weather display
+ */
 export function PlannerClient({ userLocation }: { userLocation: string }) {
     return (
         <DateProvider>
-            {/* Two column layout */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-                {/* Left column - Schedule */}
                 <div className="space-y-6">
                     <ScheduleComponent />
                 </div>
 
-                {/* Right column - Widgets */}
                 <div className="space-y-6">
                     <DailyGoals />
                     <NotesComponent />
