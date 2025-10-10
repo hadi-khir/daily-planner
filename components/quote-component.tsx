@@ -1,47 +1,34 @@
-interface QuoteResponse {
-  statusCode: number
-  message: string
-  pagination: {
-    currentPage: number
-    nextPage: number | null
-    totalPages: number
-  }
-  totalQuotes: number
-  data: Array<{
-    _id: string
-    quoteText: string
-    quoteAuthor: string
-    quoteGenre: string
-    __v: number
-  }>
+"use client"
+
+import { useState, useEffect } from "react"
+
+interface QuoteData {
+  quoteText: string
+  quoteAuthor: string
+  quoteCategory?: string
 }
 
-export async function QuoteComponent() {
-  let quote = "The way to get started is to quit talking and begin doing. - Walt Disney"
-  let author = ""
+export function QuoteComponent() {
+  const [quote, setQuote] = useState("The way to get started is to quit talking and begin doing.")
+  const [author, setAuthor] = useState("Walt Disney")
 
-  // Calculate seconds until midnight
-  const now = new Date()
-  const midnight = new Date(now)
-  midnight.setHours(24, 0, 0, 0)
-  const secondsUntilMidnight = Math.floor((midnight.getTime() - now.getTime()) / 1000)
+  useEffect(() => {
+    const fetchQuote = async () => {
+      try {
+        const res = await fetch('/api/quote')
 
-  try {
-    const response = await fetch("https://quote-garden.onrender.com/api/v3/quotes/random", {
-      next: { revalidate: secondsUntilMidnight }, // Cache until midnight
-    })
-
-    if (response.ok) {
-      const data: QuoteResponse = await response.json()
-      if (data.data && data.data.length > 0) {
-        quote = data.data[0].quoteText
-        author = data.data[0].quoteAuthor
+        if (res.ok) {
+          const data: QuoteData = await res.json()
+          setQuote(data.quoteText)
+          setAuthor(data.quoteAuthor)
+        }
+      } catch (error) {
+        console.error("Failed to fetch quote:", error)
       }
     }
-  } catch (error) {
-    // Fall back to default quote on error
-    console.error("Failed to fetch quote:", error)
-  }
+
+    fetchQuote()
+  }, [])
 
   return (
     <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">

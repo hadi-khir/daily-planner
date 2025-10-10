@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect, use } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Cloud, Sun, CloudRain, Snowflake, MapPin, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
