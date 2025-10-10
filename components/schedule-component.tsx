@@ -93,7 +93,7 @@ export function ScheduleComponent() {
                                             </div>
                                             {event.event_date && (
                                                 <p className="text-xs text-muted-foreground mb-1">
-                                                    {new Date(event.event_date).toLocaleDateString("en-US", {
+                                                    {new Date(event.event_date + 'T00:00:00').toLocaleDateString("en-US", {
                                                         weekday: "short",
                                                         month: "short",
                                                         day: "numeric",
